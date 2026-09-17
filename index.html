@@ -43,33 +43,26 @@
               <div><p class="section-kicker">ტერიტორიის სქემა</p><h2 id="map-title">სპოტების რუკა</h2></div>
               <div class="legend" aria-label="რუკის აღნიშვნები"><span><i class="legend-free"></i>თავისუფალი</span><span><i class="legend-occupied"></i>დაკავებული</span><span><i class="legend-found"></i>ნაპოვნი</span></div>
             </div>
-            <div class="zone-nav" aria-label="რუკის ზონები"><button type="button" data-zone="A">A · ზედა</button><button type="button" data-zone="B">B · მარჯვნივ</button><button type="button" data-zone="C">C · მარცხნივ</button><button type="button" data-zone="E">E · ცენტრი</button><button type="button" data-zone="F">F · ქვედა</button></div>
+            <div class="zone-nav" aria-label="რუკის ზონები"><button type="button" data-zone="A">A · ზედა მარცხენა</button><button type="button" data-zone="B">B · ზედა მარჯვენა</button><button type="button" data-zone="C">C · მარცხენა ზედა</button><button type="button" data-zone="D">D · მარჯვენა ზედა</button><button type="button" data-zone="E">E · მარცხენა ქვედა</button><button type="button" data-zone="F">F · მარჯვენა ქვედა</button></div>
             <div class="map-wrap" id="mapWrap">
               <svg id="yardMap" viewBox="100 0 830 1526" role="img" aria-label="წითლად შემოხაზულ რეალურ იარდზე დატანილი 24 სავარაუდო კონტეინერის სპოტი" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <pattern id="yardTexture" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#c9d2bc" opacity=".38" /></pattern>
-                  <pattern id="containerLines" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M1 0v8" stroke="#bdc9c0" stroke-width="2" opacity=".55" /></pattern>
-                  <filter id="glow"><feGaussianBlur stdDeviation="5" /></filter>
+                  <path id="yardShape" d="M368 27 L390 27 L600 95 L760 125 L895 171 L854 390 L806 540 L681 764 L681 846 L808 891 L725 1115 L652 1364 L609 1471 L604 1498 L352 1438 L160 1380 L198 1219 L270 1008 L381 691 L141 558 L165 497 L225 407 L285 278 Z" />
+                  <mask id="outsideYard" maskUnits="userSpaceOnUse" x="100" y="0" width="830" height="1526"><rect x="100" y="0" width="830" height="1526" fill="white" /><use href="#yardShape" fill="black" /></mask>
                 </defs>
-                <image href="yard-reference.png" x="0" y="0" width="1016" height="1526" preserveAspectRatio="none" />
-                <path class="outside-mask" fill-rule="evenodd" d="M100 0 H930 V1526 H100 Z M367 27 L388 27 L500 73 L629 106 L749 123 L849 147 L884 176 L897 162 L890 264 L856 384 L817 519 L767 630 L687 765 L680 846 L809 890 L807 921 L746 1082 L691 1244 L656 1360 L610 1464 L604 1497 L464 1473 L339 1434 L224 1410 L160 1381 L194 1226 L260 1038 L326 849 L380 691 L381 677 L340 645 L141 558 L157 496 L211 408 L256 307 L310 198 Z" />
-                <path class="site-overlay" d="M367 27 L388 27 L500 73 L629 106 L749 123 L849 147 L884 176 L897 162 L890 264 L856 384 L817 519 L767 630 L687 765 L680 846 L809 890 L807 921 L746 1082 L691 1244 L656 1360 L610 1464 L604 1497 L464 1473 L339 1434 L224 1410 L160 1381 L194 1226 L260 1038 L326 849 L380 691 L381 677 L340 645 L141 558 L157 496 L211 408 L256 307 L310 198 Z" />
-                <path class="site-boundary" d="M367 27 L388 27 L500 73 L629 106 L749 123 L849 147 L884 176 L897 162 L890 264 L856 384 L817 519 L767 630 L687 765 L680 846 L809 890 L807 921 L746 1082 L691 1244 L656 1360 L610 1464 L604 1497 L464 1473 L339 1434 L224 1410 L160 1381 L194 1226 L260 1038 L326 849 L380 691 L381 677 L340 645 L141 558 L157 496 L211 408 L256 307 L310 198 Z" />
-                <path class="aisle-center" d="M466 305 Q512 472 545 658 T513 819 Q467 988 438 1259" />
+                <image href="yard-clean-reference.png" x="5.77" y="-159.62" width="1038.46" height="1774.36" preserveAspectRatio="none" />
+                <rect class="outside-mask" x="100" y="0" width="830" height="1526" mask="url(#outsideYard)" />
+                <use class="site-overlay" href="#yardShape" />
+                <use class="site-boundary" href="#yardShape" />
+                <path class="aisle-center" d="M505 300 L525 470 L505 640 M530 815 L513 1080 L467 1270" />
                 <path class="entry-arrow" d="M602 1490 L568 1420 M559 1437 L568 1420 L584 1428" />
                 <text class="map-direction" x="380" y="1475">შესასვლელი</text>
-                <text class="zone-label" x="383" y="74">A · ზედა რიგი</text>
-                <text class="zone-label" x="598" y="159">B · მარჯვენა ზედა</text>
-                <text class="zone-label" x="226" y="282">C · მარცხენა</text>
-                <text class="zone-label" x="673" y="320">D · მარჯვენა</text>
-                <text class="zone-label" x="323" y="458">E · ცენტრი</text>
-                <text class="zone-label" x="512" y="905">F · ქვედა</text>
-                <text class="map-aisle-label" x="367" y="1180">გასავლელი ზონა</text>
+                <text class="map-aisle-label" x="438" y="1160">გასავლელი</text>
                 <g id="spotLayer"></g>
                 <g class="north-indicator" transform="translate(902 24)"><path d="M0 20 L8 0 L16 20 L8 16 Z" /><text x="8" y="33" text-anchor="middle">N</text></g>
               </svg>
             </div>
-            <div class="map-footer"><span>კონტეინერის სპოტის პროპორცია აღებულია ფოტოზე მდგომი ლურჯი და წითელი კონტეინერებიდან. ზომები ადგილზე დასადასტურებელია.</span><span class="map-foot-hint">რუკა გადაადგილდება თითით</span></div>
+            <div class="map-footer"><span>წითელი საზღვარი გასწორებულია; სპოტების მოკლე გვერდი კიდის პარალელურია და შუაში გასასვლელი რჩება. ზომები ადგილზე დასადასტურებელია.</span><span class="map-foot-hint">რუკა გადაადგილდება თითით</span></div>
           </section>
 
           <aside class="control-card" aria-label="ძებნა და სპოტის მართვა">

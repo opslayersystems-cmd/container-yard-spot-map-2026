@@ -20,13 +20,31 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
     F02: 'MSNU 507881-9', F04: 'MSNU 930215-1'
   };
 
+  // Every door edge follows its nearby straight yard edge. The long axis is its
+  // inward normal, so containers in one row stay parallel and leave the aisle open.
+  function edgeRow(prefix, start, end, fractions, length, width, setback, side) {
+    const dx = end[0] - start[0], dy = end[1] - start[1], edgeLength = Math.hypot(dx, dy);
+    const tangent = [dx / edgeLength, dy / edgeLength];
+    const normal = [-tangent[1] * side, tangent[0] * side];
+    return fractions.map((fraction, index) => {
+      const door = [start[0] + dx * fraction + normal[0] * setback, start[1] + dy * fraction + normal[1] * setback];
+      const half = width / 2;
+      const corners = [
+        [door[0] - tangent[0] * half, door[1] - tangent[1] * half],
+        [door[0] + tangent[0] * half, door[1] + tangent[1] * half],
+        [door[0] + tangent[0] * half + normal[0] * length, door[1] + tangent[1] * half + normal[1] * length],
+        [door[0] - tangent[0] * half + normal[0] * length, door[1] - tangent[1] * half + normal[1] * length]
+      ];
+      return { code: `${prefix}${String(index + 1).padStart(2, '0')}`, corners, center: [door[0] + normal[0] * length / 2, door[1] + normal[1] * length / 2], tangent, normal, width, length };
+    });
+  }
   const spots = [
-    ...Array.from({ length: 4 }, (_, index) => ({ code: `A${String(index + 1).padStart(2, '0')}`, x: 390 + index * 49, y: 92 + index * 11, w: 39, h: 124, rotation: -17 })),
-    ...Array.from({ length: 4 }, (_, index) => ({ code: `B${String(index + 1).padStart(2, '0')}`, x: 585 + index * 49, y: 172 + index * 5, w: 39, h: 124, rotation: 4 })),
-    ...Array.from({ length: 4 }, (_, index) => ({ code: `C${String(index + 1).padStart(2, '0')}`, x: 270 - index * 25, y: 309 + index * 56, w: 117, h: 38, rotation: -24 })),
-    ...Array.from({ length: 4 }, (_, index) => ({ code: `D${String(index + 1).padStart(2, '0')}`, x: 670 - index * 8, y: 345 + index * 56, w: 117, h: 38, rotation: 5 })),
-    ...Array.from({ length: 4 }, (_, index) => ({ code: `E${String(index + 1).padStart(2, '0')}`, x: 345 + index * 47, y: 480 + index * 9, w: 39, h: 132, rotation: -22 })),
-    ...Array.from({ length: 4 }, (_, index) => ({ code: `F${String(index + 1).padStart(2, '0')}`, x: 525 - index * 7, y: 927 + index * 122, w: 42, h: 112, rotation: -12 }))
+    ...edgeRow('A', [390, 27], [600, 95], [.12, .35, .58, .81], 125, 39, 28, 1),
+    ...edgeRow('B', [600, 95], [895, 171], [.18, .38, .58, .78], 125, 39, 28, 1),
+    ...edgeRow('C', [285, 278], [141, 558], [.14, .35, .56, .77], 112, 39, 17, -1),
+    ...edgeRow('D', [895, 171], [681, 764], [.31, .43, .55, .67], 115, 39, 20, 1),
+    ...edgeRow('E', [381, 691], [160, 1380], [.22, .36, .50, .64], 112, 41, 18, -1),
+    ...edgeRow('F', [808, 891], [652, 1364], [.14, .33, .52, .71], 112, 41, 18, 1)
   ];
   const byCode = new Map(spots.map(spot => [spot.code, spot]));
   const els = Object.fromEntries(['spotLayer','totalCount','occupiedCount','freeCount','searchTab','assignTab','searchPane','assignPane','searchForm','searchInput','searchFeedback','assignForm','spotCode','containerInput','assignFeedback','detailPanel','resetButton','exampleSearch','sampleNumber'].map(id => [id, document.getElementById(id)]));
@@ -55,13 +73,14 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
 
   function makeSpot(spot) {
     const occupied = !!assignments[spot.code];
-    const group = svg('g', { class: `spot ${occupied ? 'occupied' : 'free'}${found === spot.code ? ' found' : ''}${selected === spot.code ? ' selected' : ''}`, tabindex: 0, role: 'button', 'aria-label': `${spot.code} სპოტი, ${occupied ? `დაკავებულია, ${assignments[spot.code]}` : 'თავისუფალია'}`, 'data-code': spot.code, transform: `rotate(${spot.rotation || 0} ${spot.x + spot.w / 2} ${spot.y + spot.h / 2})` });
-    group.append(svg('rect', { class: 'hit-area', x: spot.x - 8, y: spot.y - 8, width: spot.w + 16, height: spot.h + 16, rx: 12 }));
-    group.append(svg('rect', { class: 'focus-ring', x: spot.x - 5, y: spot.y - 5, width: spot.w + 10, height: spot.h + 10, rx: 10 }));
-    group.append(svg('rect', { class: 'outer', x: spot.x, y: spot.y, width: spot.w, height: spot.h }));
-    group.append(svg('rect', { class: 'ribs', x: spot.x + 7, y: spot.y + 7, width: spot.w - 14, height: spot.h - 14, rx: 2 }));
-    const cx = spot.x + spot.w / 2;
-    const cy = spot.y + spot.h / 2;
+    const group = svg('g', { class: `spot ${occupied ? 'occupied' : 'free'}${found === spot.code ? ' found' : ''}${selected === spot.code ? ' selected' : ''}`, tabindex: 0, role: 'button', 'aria-label': `${spot.code} სპოტი, ${occupied ? `დაკავებულია, ${assignments[spot.code]}` : 'თავისუფალია'}`, 'data-code': spot.code });
+    const points = spot.corners.map(point => point.map(value => value.toFixed(1)).join(',')).join(' ');
+    group.append(svg('polygon', { class: 'hit-area', points }));
+    group.append(svg('polygon', { class: 'focus-ring', points }));
+    group.append(svg('polygon', { class: 'outer', points }));
+    const door = spot.corners;
+    group.append(svg('line', { class: 'door-edge', x1: door[0][0], y1: door[0][1], x2: door[1][0], y2: door[1][1] }));
+    const cx = spot.center[0], cy = spot.center[1];
     const code = svg('text', { class: 'spot-code', x: cx, y: cy + (occupied ? -1 : 5) }); code.textContent = spot.code; group.append(code);
     if (occupied) { const number = svg('text', { class: 'spot-number', x: cx, y: cy + 12 }); number.textContent = normalize(assignments[spot.code]).slice(-5); group.append(number); }
     group.addEventListener('click', () => chooseSpot(spot.code));
