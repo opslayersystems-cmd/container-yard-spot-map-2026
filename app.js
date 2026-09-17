@@ -1,18 +1,32 @@
 (() => {
-  const STORAGE_KEY = 'yard-spots-demo-v1';
+  const STORAGE_KEY = 'yard-spots-demo-v2';
   const SVG_NS = 'http://www.w3.org/2000/svg';
+  const inventory = `
+MSMU7709524 MSMU6398201 TCNU3278686 CAIU9867123 CAIU7758890 MSCU5416358
+TGBU5568529 CAIU7763156 MSNU5078819 MSNU9302151 MSNU7473638 MSDU5877374
+MSNU7355506 MSNU7180476 MEDU4452906 TGBU9879088 MRKU5054214 GAOU7716744
+MRSU6119272 TCLU9408455 FFAU7102769 UETU8538761 MSNU5490359 MSDU7015569
+MSNU8073641 MSDU5374343 MSBU5344824 TCKU6416064 TCNU1614040 MSDU5829890
+MRKU2132313 MRSU7905770 CAAU4724852 TCKU6888538 SELU4035650 HAMU3669822
+CAIU7172390 HAMU3527010 FFAU2345637 MRKU6442868 MSKU1829199 FANU3482520
+SEGU5617083 MSNU5302889 MRSU8928738 MSBU5068407 HAMU3773740 HAMU4124196
+MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
+  `.trim().split(/\s+/);
   const seed = {
-    A02: 'MSCU 742918-3', A05: 'TCLU 983104-2',
-    B01: 'CMAU 104582-7', B04: 'TEMU 583204-1', B07: 'FSCU 902117-5',
-    C02: 'OOLU 670442-0', C05: 'MEDU 487630-2',
-    D01: 'TRHU 718205-6', D03: 'CXDU 614927-4', D06: 'SEGU 125408-9', D08: 'APZU 504128-7'
+    A02: 'MSMU 770952-4', A04: 'MSMU 639820-1',
+    B01: 'TCNU 327868-6', B03: 'CAIU 986712-3',
+    C02: 'CAIU 775889-0', D02: 'MSCU 541635-8',
+    E01: 'TGBU 556852-9', E03: 'CAIU 776315-6',
+    F02: 'MSNU 507881-9', F04: 'MSNU 930215-1'
   };
 
   const spots = [
-    ...Array.from({ length: 8 }, (_, index) => ({ code: `A${String(index + 1).padStart(2, '0')}`, x: 180 + index * 79, y: 121, w: 70, h: 75 })),
-    ...Array.from({ length: 7 }, (_, index) => ({ code: `B${String(index + 1).padStart(2, '0')}`, x: 817, y: 230 + index * 45, w: 95, h: 38 })),
-    ...Array.from({ length: 7 }, (_, index) => ({ code: `C${String(index + 1).padStart(2, '0')}`, x: 89, y: 230 + index * 45, w: 95, h: 38 })),
-    ...Array.from({ length: 8 }, (_, index) => ({ code: `D${String(index + 1).padStart(2, '0')}`, x: index < 4 ? 100 + index * 76 : 602 + (index - 4) * 76, y: 549, w: 70, h: 73 }))
+    ...Array.from({ length: 4 }, (_, index) => ({ code: `A${String(index + 1).padStart(2, '0')}`, x: 390 + index * 49, y: 92 + index * 11, w: 39, h: 124, rotation: -17 })),
+    ...Array.from({ length: 4 }, (_, index) => ({ code: `B${String(index + 1).padStart(2, '0')}`, x: 585 + index * 49, y: 172 + index * 5, w: 39, h: 124, rotation: 4 })),
+    ...Array.from({ length: 4 }, (_, index) => ({ code: `C${String(index + 1).padStart(2, '0')}`, x: 270 - index * 25, y: 309 + index * 56, w: 117, h: 38, rotation: -24 })),
+    ...Array.from({ length: 4 }, (_, index) => ({ code: `D${String(index + 1).padStart(2, '0')}`, x: 670 - index * 8, y: 345 + index * 56, w: 117, h: 38, rotation: 5 })),
+    ...Array.from({ length: 4 }, (_, index) => ({ code: `E${String(index + 1).padStart(2, '0')}`, x: 345 + index * 47, y: 480 + index * 9, w: 39, h: 132, rotation: -22 })),
+    ...Array.from({ length: 4 }, (_, index) => ({ code: `F${String(index + 1).padStart(2, '0')}`, x: 525 - index * 7, y: 927 + index * 122, w: 42, h: 112, rotation: -12 }))
   ];
   const byCode = new Map(spots.map(spot => [spot.code, spot]));
   const els = Object.fromEntries(['spotLayer','totalCount','occupiedCount','freeCount','searchTab','assignTab','searchPane','assignPane','searchForm','searchInput','searchFeedback','assignForm','spotCode','containerInput','assignFeedback','detailPanel','resetButton','exampleSearch','sampleNumber'].map(id => [id, document.getElementById(id)]));
@@ -41,7 +55,8 @@
 
   function makeSpot(spot) {
     const occupied = !!assignments[spot.code];
-    const group = svg('g', { class: `spot ${occupied ? 'occupied' : 'free'}${found === spot.code ? ' found' : ''}${selected === spot.code ? ' selected' : ''}`, tabindex: 0, role: 'button', 'aria-label': `${spot.code} სპოტი, ${occupied ? `დაკავებულია, ${assignments[spot.code]}` : 'თავისუფალია'}`, 'data-code': spot.code });
+    const group = svg('g', { class: `spot ${occupied ? 'occupied' : 'free'}${found === spot.code ? ' found' : ''}${selected === spot.code ? ' selected' : ''}`, tabindex: 0, role: 'button', 'aria-label': `${spot.code} სპოტი, ${occupied ? `დაკავებულია, ${assignments[spot.code]}` : 'თავისუფალია'}`, 'data-code': spot.code, transform: `rotate(${spot.rotation || 0} ${spot.x + spot.w / 2} ${spot.y + spot.h / 2})` });
+    group.append(svg('rect', { class: 'hit-area', x: spot.x - 8, y: spot.y - 8, width: spot.w + 16, height: spot.h + 16, rx: 12 }));
     group.append(svg('rect', { class: 'focus-ring', x: spot.x - 5, y: spot.y - 5, width: spot.w + 10, height: spot.h + 10, rx: 10 }));
     group.append(svg('rect', { class: 'outer', x: spot.x, y: spot.y, width: spot.w, height: spot.h }));
     group.append(svg('rect', { class: 'ribs', x: spot.x + 7, y: spot.y + 7, width: spot.w - 14, height: spot.h - 14, rx: 2 }));
@@ -92,7 +107,7 @@
     if (!query) { found = null; setFeedback(els.searchFeedback, 'შეიყვანეთ კონტეინერის ნომერი.', 'error'); render(); return; }
     const code = Object.keys(assignments).find(spot => normalize(assignments[spot]) === query);
     if (code) showFound(code);
-    else { found = null; selected = null; render(); setFeedback(els.searchFeedback, 'ამ ნომრით კონტეინერი იარდში ვერ მოიძებნა.', 'error'); }
+    else { found = null; selected = null; render(); setFeedback(els.searchFeedback, inventory.includes(query) ? 'ეს ნომერი მოწოდებულ სიაშია, მაგრამ დემო რუკაზე სპოტი ჯერ არ მინიჭებია.' : 'ამ ნომრით კონტეინერი იარდში ვერ მოიძებნა.', 'error'); }
   }
   function assign(event) {
     event.preventDefault();
@@ -100,7 +115,7 @@
     const number = normalize(els.containerInput.value);
     if (!code) { setFeedback(els.assignFeedback, 'ჯერ რუკაზე აირჩიეთ თავისუფალი სპოტი.', 'error'); return; }
     if (assignments[code]) { setFeedback(els.assignFeedback, `${code} უკვე დაკავებულია.`, 'error'); return; }
-    if (!/^[A-Z]{4}[0-9]{7}$/.test(number)) { setFeedback(els.assignFeedback, 'გამოიყენეთ ფორმატი: 4 ასო და 7 ციფრი (მაგ. TEMU 583204-1).', 'error'); return; }
+    if (!/^[A-Z]{4}[0-9]{7}$/.test(number)) { setFeedback(els.assignFeedback, 'გამოიყენეთ ფორმატი: 4 ასო და 7 ციფრი (მაგ. TCNU 327868-6).', 'error'); return; }
     if (Object.values(assignments).some(value => normalize(value) === number)) { setFeedback(els.assignFeedback, 'ეს კონტეინერი უკვე სხვა სპოტზეა განთავსებული.', 'error'); return; }
     assignments[code] = format(number); persist(); els.containerInput.value = ''; found = code; render();
     setFeedback(els.assignFeedback, `${format(number)} წარმატებით განთავსდა ${code} სპოტზე.`, 'success');
@@ -123,7 +138,10 @@
   els.searchForm.addEventListener('submit', event => { event.preventDefault(); search(els.searchInput.value); });
   els.assignForm.addEventListener('submit', assign);
   els.resetButton.addEventListener('click', resetDemo);
-  for (const button of [els.exampleSearch, els.sampleNumber]) button.addEventListener('click', () => { els.searchInput.value = 'MSCU 742918-3'; search(els.searchInput.value); });
+  for (const number of inventory) { const option = document.createElement('option'); option.value = format(number); document.getElementById('containerOptions').append(option); }
+  for (const button of [els.exampleSearch, els.sampleNumber]) button.addEventListener('click', () => { els.searchInput.value = 'MSMU 770952-4'; search(els.searchInput.value); });
+  document.querySelectorAll('[data-zone]').forEach(button => button.addEventListener('click', () => document.querySelector(`[data-code^="${button.dataset.zone}"]`)?.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })));
   window.addEventListener('storage', event => { if (event.key === STORAGE_KEY) { assignments = loadAssignments(); if (selected && !byCode.has(selected)) selected = null; render(); } });
   render();
+  if (window.innerWidth < 611) document.getElementById('mapWrap').scrollLeft = (document.getElementById('mapWrap').scrollWidth - document.getElementById('mapWrap').clientWidth) / 2;
 })();
