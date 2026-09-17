@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ka">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10251f" />
+    <meta name="description" content="კონტეინერების იარდის ინტერაქტიული რუკა — სპოტზე განთავსება და ნომრით მოძებნა." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310251f'/%3E%3Cpath d='M12 18h40v28H12zM22 18v28M42 18v28' fill='none' stroke='%239be6bd' stroke-width='4'/%3E%3C/svg%3E" />
+    <title>კონტეინერების იარდი · სპოტების რუკა</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand" aria-label="კონტეინერების იარდი">
+          <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div><strong>YARD / SPOTS</strong><small>კონტეინერების იარდი</small></div>
+        </div>
+        <div class="topbar-right"><span class="live-dot" aria-hidden="true"></span><span>სატესტო რუკა</span><span class="top-separator"></span><span>ადგილის ნახვა • განთავსება</span></div>
+      </header>
+
+      <main class="workspace">
+        <section class="page-heading" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">იარდის მართვა <span class="eyebrow-line"></span> რუკა 01</p>
+            <h1 id="page-title">თითოეულ კონტეინერს თავისი ადგილი</h1>
+            <p class="heading-note">იპოვეთ კონტეინერი ნომრით ან აირჩიეთ თავისუფალი სპოტი მისი განსათავსებლად.</p>
+          </div>
+          <div class="demo-tag"><span class="demo-tag-icon">i</span><span>დემო ვერსია<br /><strong>მონაცემები ამ ბრაუზერში ინახება</strong></span></div>
+        </section>
+
+        <section class="summary" aria-label="იარდის სტატისტიკა">
+          <div class="summary-card"><span class="summary-icon all-icon" aria-hidden="true">▦</span><div><span>სულ სპოტი</span><strong id="totalCount">30</strong></div></div>
+          <div class="summary-card"><span class="summary-icon occupied-icon" aria-hidden="true">▣</span><div><span>დაკავებული</span><strong id="occupiedCount">—</strong></div></div>
+          <div class="summary-card"><span class="summary-icon free-icon" aria-hidden="true">◇</span><div><span>თავისუფალი</span><strong id="freeCount">—</strong></div></div>
+          <div class="summary-card example-card"><span>სატესტო ძებნა</span><button type="button" id="exampleSearch" class="example-button">MSCU 742918-3 <span aria-hidden="true">↗</span></button></div>
+        </section>
+
+        <div class="content-grid">
+          <section class="map-card" aria-labelledby="map-title">
+            <div class="card-toolbar">
+              <div><p class="section-kicker">ტერიტორიის სქემა</p><h2 id="map-title">სპოტების რუკა</h2></div>
+              <div class="legend" aria-label="რუკის აღნიშვნები"><span><i class="legend-free"></i>თავისუფალი</span><span><i class="legend-occupied"></i>დაკავებული</span><span><i class="legend-found"></i>ნაპოვნი</span></div>
+            </div>
+            <div class="map-wrap" id="mapWrap">
+              <svg id="yardMap" viewBox="0 0 1000 720" role="img" aria-label="კონტეინერების იარდის სქემატური რუკა, 30 დანომრილი სპოტით" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="yardTexture" width="18" height="18" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#c9d2bc" opacity=".38" /></pattern>
+                  <pattern id="containerLines" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M1 0v8" stroke="#bdc9c0" stroke-width="2" opacity=".55" /></pattern>
+                  <filter id="glow"><feGaussianBlur stdDeviation="5" /></filter>
+                </defs>
+                <path class="site-ground" d="M65 71 H936 V646 H65 Z" />
+                <path class="site-texture" d="M65 71 H936 V646 H65 Z" />
+                <path class="site-boundary" d="M65 71 H936 V646 H65 Z" />
+                <path class="aisle" d="M196 203 H811 V502 H196 Z" />
+                <path class="aisle-center" d="M256 351 H764" />
+                <path class="aisle-center" d="M501 227 V483" />
+                <path class="entry-lane" d="M425 645 V695 H575 V645" />
+                <path class="entry-arrow" d="M500 676 V622 M488 636 L500 622 L512 636" />
+                <text class="map-direction" x="482" y="690">შესასვლელი</text>
+                <text class="zone-label" x="82" y="102">A · ჩრდილოეთი</text>
+                <text class="zone-label" x="817" y="205">B · აღმოსავლეთი</text>
+                <text class="zone-label" x="80" y="205">C · დასავლეთი</text>
+                <text class="zone-label" x="290" y="527">D · სამხრეთი</text>
+                <text class="map-aisle-label" x="411" y="339">მანევრირების ზონა</text>
+                <g id="spotLayer"></g>
+                <g class="north-indicator" transform="translate(913 34)"><path d="M0 20 L8 0 L16 20 L8 16 Z" /><text x="8" y="33" text-anchor="middle">N</text></g>
+              </svg>
+            </div>
+            <div class="map-footer"><span>სქემატური განლაგება • ზომები და მოძრაობის მიმართულება ადგილზე დასადასტურებელია</span><span class="map-foot-hint">სპოტის სანახავად დააჭირეთ რუკაზე</span></div>
+          </section>
+
+          <aside class="control-card" aria-label="ძებნა და სპოტის მართვა">
+            <div class="mode-switch" role="tablist" aria-label="მოქმედება"><button type="button" class="mode-tab active" id="searchTab" role="tab" aria-selected="true">მოძებნა</button><button type="button" class="mode-tab" id="assignTab" role="tab" aria-selected="false">განთავსება</button></div>
+            <div id="searchPane" class="pane">
+              <div class="pane-title"><span class="pane-index">01 / ძებნა</span><h2>სად დგას კონტეინერი?</h2><p>ჩაწერეთ კონტეინერის ნომერი. რუკაზე მისი სპოტი მწვანედ გამოჩნდება.</p></div>
+              <form id="searchForm" novalidate><label for="searchInput">კონტეინერის ნომერი</label><div class="search-field"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="searchInput" name="container" autocomplete="off" placeholder="მაგ. MSCU 742918-3" /><button type="submit" aria-label="მოძებნა">↗</button></div></form>
+              <div id="searchFeedback" class="feedback" role="status" aria-live="polite">სცადეთ სატესტო ნომერი: <button type="button" id="sampleNumber">MSCU 742918-3</button></div>
+            </div>
+            <div id="assignPane" class="pane" hidden>
+              <div class="pane-title"><span class="pane-index">02 / განთავსება</span><h2>მიანიჭეთ სპოტი</h2><p>რუკაზე აირჩიეთ თავისუფალი ადგილი და შეიყვანეთ კონტეინერის ნომერი.</p></div>
+              <form id="assignForm" novalidate><label for="spotCode">არჩეული სპოტი</label><input id="spotCode" name="spot" readonly placeholder="აირჩიეთ რუკაზე" /><label for="containerInput">კონტეინერის ნომერი</label><input id="containerInput" name="container" autocomplete="off" autocapitalize="characters" placeholder="მაგ. TEMU 583204-1" maxlength="22" /><button class="primary-button" type="submit">სპოტზე განთავსება <span aria-hidden="true">↗</span></button></form>
+              <p id="assignFeedback" class="feedback" role="status" aria-live="polite">თავისუფალი სპოტები რუკაზე ღია ფერით არის მონიშნული.</p>
+            </div>
+            <div class="detail-panel" id="detailPanel" aria-live="polite"><div class="detail-placeholder"><span class="detail-glyph" aria-hidden="true">⌖</span><strong>სპოტი ჯერ არ არის არჩეული</strong><p>დააჭირეთ სპოტს რუკაზე ან მოძებნეთ კონტეინერი.</p></div></div>
+            <button type="button" id="resetButton" class="reset-button">სატესტო მონაცემების აღდგენა <span aria-hidden="true">↺</span></button>
+          </aside>
+        </div>
+        <p class="site-footnote">მაკეტი აგებულია მოწოდებული სატელიტური სურათის მიხედვით. სპოტების რაოდენობა და მდებარეობა საბოლოო გაზომვით უნდა დაზუსტდეს.</p>
+      </main>
+    </div>
+  </body>
+</html>
