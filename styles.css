@@ -82,6 +82,10 @@
 .gate-arrow{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px #17452e)}
 .gate-badge{fill:#0d6745;stroke:#e9ffec;stroke-width:2}
 .gate-number{fill:#fff;font-size:14px;font-weight:800;text-anchor:middle;dominant-baseline:central}
+.gate-exit .gate-lane{fill:#f3bc61;fill-opacity:.19;stroke:#ffe5b9}
+.gate-exit .gate-opening{stroke:#ffe8c5}
+.gate-exit .gate-arrow{stroke:#fff0cd}
+.gate-exit .gate-badge{fill:#9b5b25;stroke:#fff0d0}
 
 .map-navigation{display:flex;align-items:center;border-top:1px solid var(--line)}
 .map-navigation .zone-nav{flex:1;min-width:0;border-top:0}

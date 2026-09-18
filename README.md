@@ -7,6 +7,7 @@ An interactive Georgian-language demo for assigning containers to numbered yard 
 - 58 spots in six perimeter rows (A–F), following the two-part yard footprint. A01–A06 and B06–B10 are removed to leave two access lanes at the top of the yard; D has 16 spots and F has 15.
 - Container widths are 1.2 times the preceding half-width layout (23.4 map units in A–D; 24.6 in E–F). Lengths are 1.1 times that layout (137.5 in A–B, 123.2 in C/E/F, 126.5 in D). Gaps between neighboring spots equal 20% of their width (4.68 and 4.92 map units respectively).
 - The red boundary now connects only clear corners with straight segments. Each spot's short door edge is parallel to its adjacent straight yard edge; its long axis is perpendicular. The rows avoid overlap and leave a central access aisle.
+- Numbered arrows show inward traffic in lanes 1 and 3, outward traffic in lanes 2 and 4. Lanes 3 and 4 are on the short bottom edge near Aquino Auto, below the E row. The map uses no visible entrance or exit words.
 - The map is shown slightly zoomed out on desktop and phone so more of the yard is visible at once.
 - Zoom buttons let phone users enlarge the spots for easier selection while keeping the wider overview as the default.
 - The 52 user-provided container numbers are available as input suggestions. Their demo spot assignments are illustrative, not actual location claims.
