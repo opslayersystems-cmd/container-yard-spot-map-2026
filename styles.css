@@ -67,3 +67,25 @@
 /* A modest zoom out keeps more of the yard and its shared aisle in view. */
 .map-wrap svg{width:86%;min-width:580px;margin-inline:auto}
 @media(max-width:610px){.map-wrap svg{width:710px;min-width:710px;margin-inline:0}}
+
+/* Long-axis labels stay readable within the compact spots. */
+.spot polygon.outer{stroke-width:1.5}
+.spot.found polygon.outer,.spot.selected:not(.found) polygon.outer,.spot:hover polygon.outer,.spot:focus-visible polygon.outer{stroke-width:2.5}
+.spot polygon.hit-area{stroke-width:2}
+.spot polygon.focus-ring{stroke-width:3}
+.spot .door-edge{stroke-width:2.5}
+.spot .spot-code{font-size:12px;letter-spacing:-.025em}
+
+.map-navigation{display:flex;align-items:center;border-top:1px solid var(--line)}
+.map-navigation .zone-nav{flex:1;min-width:0;border-top:0}
+.zoom-actions{display:flex;flex:none;gap:4px;padding:4px 7px;border-left:1px solid var(--line)}
+.zoom-actions button{width:44px;height:44px;border:1px solid #d6e5d9;border-radius:8px;background:#f6faf5;color:#225b3d;font-size:23px;line-height:1}
+.zoom-actions button:hover:not(:disabled){background:#e8f5e9;border-color:#77b88a}
+.map-wrap[data-zoom="1"] svg{width:112%;min-width:760px}
+.map-wrap[data-zoom="2"] svg{width:145%;min-width:980px}
+.map-wrap[data-zoom="3"] svg{width:180%;min-width:1230px}
+@media(max-width:610px){
+  .map-wrap[data-zoom="1"] svg{width:950px;min-width:950px}
+  .map-wrap[data-zoom="2"] svg{width:1250px;min-width:1250px}
+  .map-wrap[data-zoom="3"] svg{width:1600px;min-width:1600px}
+}

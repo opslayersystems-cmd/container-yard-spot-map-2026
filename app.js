@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'yard-spots-demo-v2';
+  const STORAGE_KEY = 'yard-spots-demo-v4';
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const inventory = `
 MSMU7709524 MSMU6398201 TCNU3278686 CAIU9867123 CAIU7758890 MSCU5416358
@@ -22,11 +22,14 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
 
   // Every door edge follows its nearby straight yard edge. The long axis is its
   // inward normal, so containers in one row stay parallel and leave the aisle open.
-  function edgeRow(prefix, start, end, fractions, length, width, setback, side) {
+  function edgeRow(prefix, start, end, count, centerFraction, length, width, setback, side) {
     const dx = end[0] - start[0], dy = end[1] - start[1], edgeLength = Math.hypot(dx, dy);
     const tangent = [dx / edgeLength, dy / edgeLength];
     const normal = [-tangent[1] * side, tangent[0] * side];
-    return fractions.map((fraction, index) => {
+    return Array.from({ length: count }, (_, index) => {
+      // Leave a gap equal to 20% of the container width between neighboring spots.
+      const pitch = width * 1.2;
+      const fraction = centerFraction + (index - (count - 1) / 2) * pitch / edgeLength;
       const door = [start[0] + dx * fraction + normal[0] * setback, start[1] + dy * fraction + normal[1] * setback];
       const half = width / 2;
       const corners = [
@@ -39,15 +42,15 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
     });
   }
   const spots = [
-    ...edgeRow('A', [390, 27], [600, 95], [.12, .35, .58, .81], 125, 39, 28, 1),
-    ...edgeRow('B', [600, 95], [895, 171], [.18, .38, .58, .78], 125, 39, 28, 1),
-    ...edgeRow('C', [285, 278], [141, 558], [.14, .35, .56, .77], 112, 39, 17, -1),
-    ...edgeRow('D', [895, 171], [681, 764], [.31, .43, .55, .67], 115, 39, 20, 1),
-    ...edgeRow('E', [381, 691], [160, 1380], [.22, .36, .50, .64], 112, 41, 18, -1),
-    ...edgeRow('F', [808, 891], [652, 1364], [.14, .33, .52, .71], 112, 41, 18, 1)
+    ...edgeRow('A', [390, 27], [600, 95], 8, .5, 137.5, 23.4, 28, 1),
+    ...edgeRow('B', [600, 95], [895, 171], 10, .48, 137.5, 23.4, 28, 1),
+    ...edgeRow('C', [285, 278], [141, 558], 10, .455, 123.2, 23.4, 17, -1),
+    ...edgeRow('D', [895, 171], [681, 764], 10, .6, 126.5, 23.4, 20, 1),
+    ...edgeRow('E', [381, 691], [160, 1380], 10, .43, 123.2, 24.6, 18, -1),
+    ...edgeRow('F', [808, 891], [652, 1364], 10, .425, 123.2, 24.6, 18, 1)
   ];
   const byCode = new Map(spots.map(spot => [spot.code, spot]));
-  const els = Object.fromEntries(['spotLayer','totalCount','occupiedCount','freeCount','searchTab','assignTab','searchPane','assignPane','searchForm','searchInput','searchFeedback','assignForm','spotCode','containerInput','assignFeedback','detailPanel','resetButton','exampleSearch','sampleNumber'].map(id => [id, document.getElementById(id)]));
+  const els = Object.fromEntries(['spotLayer','totalCount','occupiedCount','freeCount','searchTab','assignTab','searchPane','assignPane','searchForm','searchInput','searchFeedback','assignForm','spotCode','containerInput','assignFeedback','detailPanel','resetButton','exampleSearch','sampleNumber','mapWrap','zoomOut','zoomIn'].map(id => [id, document.getElementById(id)]));
   let assignments = loadAssignments();
   let mode = 'search';
   let selected = null;
@@ -74,6 +77,7 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
   function makeSpot(spot) {
     const occupied = !!assignments[spot.code];
     const group = svg('g', { class: `spot ${occupied ? 'occupied' : 'free'}${found === spot.code ? ' found' : ''}${selected === spot.code ? ' selected' : ''}`, tabindex: 0, role: 'button', 'aria-label': `${spot.code} სპოტი, ${occupied ? `დაკავებულია, ${assignments[spot.code]}` : 'თავისუფალია'}`, 'data-code': spot.code });
+    const title = svg('title'); title.textContent = occupied ? `${spot.code} · ${assignments[spot.code]}` : `${spot.code} · თავისუფალი`; group.append(title);
     const points = spot.corners.map(point => point.map(value => value.toFixed(1)).join(',')).join(' ');
     group.append(svg('polygon', { class: 'hit-area', points }));
     group.append(svg('polygon', { class: 'focus-ring', points }));
@@ -81,8 +85,10 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
     const door = spot.corners;
     group.append(svg('line', { class: 'door-edge', x1: door[0][0], y1: door[0][1], x2: door[1][0], y2: door[1][1] }));
     const cx = spot.center[0], cy = spot.center[1];
-    const code = svg('text', { class: 'spot-code', x: cx, y: cy + (occupied ? -1 : 5) }); code.textContent = spot.code; group.append(code);
-    if (occupied) { const number = svg('text', { class: 'spot-number', x: cx, y: cy + 12 }); number.textContent = normalize(assignments[spot.code]).slice(-5); group.append(number); }
+    let angle = Math.atan2(spot.normal[1], spot.normal[0]) * 180 / Math.PI;
+    if (angle > 90) angle -= 180;
+    if (angle < -90) angle += 180;
+    const code = svg('text', { class: 'spot-code', x: cx, y: cy, 'dominant-baseline': 'central', transform: `rotate(${angle.toFixed(1)} ${cx} ${cy})` }); code.textContent = spot.code; group.append(code);
     group.addEventListener('click', () => chooseSpot(spot.code));
     group.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); chooseSpot(spot.code); } });
     return group;
@@ -152,15 +158,28 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
     assignments = { ...seed }; selected = null; found = null; persist(); els.searchInput.value = ''; els.containerInput.value = ''; render(); setMode('search');
     setFeedback(els.searchFeedback, 'სატესტო მონაცემები აღდგენილია.', 'success');
   }
+  let zoomLevel = 0;
+  function setZoom(next) {
+    const x = (els.mapWrap.scrollLeft + els.mapWrap.clientWidth / 2) / els.mapWrap.scrollWidth;
+    const y = (els.mapWrap.scrollTop + els.mapWrap.clientHeight / 2) / els.mapWrap.scrollHeight;
+    zoomLevel = Math.max(0, Math.min(3, next));
+    els.mapWrap.dataset.zoom = String(zoomLevel);
+    els.zoomOut.disabled = zoomLevel === 0;
+    els.zoomIn.disabled = zoomLevel === 3;
+    els.mapWrap.scrollLeft = x * els.mapWrap.scrollWidth - els.mapWrap.clientWidth / 2;
+    els.mapWrap.scrollTop = y * els.mapWrap.scrollHeight - els.mapWrap.clientHeight / 2;
+  }
   els.searchTab.addEventListener('click', () => setMode('search'));
   els.assignTab.addEventListener('click', () => setMode('assign'));
   els.searchForm.addEventListener('submit', event => { event.preventDefault(); search(els.searchInput.value); });
   els.assignForm.addEventListener('submit', assign);
   els.resetButton.addEventListener('click', resetDemo);
+  els.zoomOut.addEventListener('click', () => setZoom(zoomLevel - 1));
+  els.zoomIn.addEventListener('click', () => setZoom(zoomLevel + 1));
   for (const number of inventory) { const option = document.createElement('option'); option.value = format(number); document.getElementById('containerOptions').append(option); }
   for (const button of [els.exampleSearch, els.sampleNumber]) button.addEventListener('click', () => { els.searchInput.value = 'MSMU 770952-4'; search(els.searchInput.value); });
   document.querySelectorAll('[data-zone]').forEach(button => button.addEventListener('click', () => document.querySelector(`[data-code^="${button.dataset.zone}"]`)?.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })));
   window.addEventListener('storage', event => { if (event.key === STORAGE_KEY) { assignments = loadAssignments(); if (selected && !byCode.has(selected)) selected = null; render(); } });
   render();
-  if (window.innerWidth < 611) document.getElementById('mapWrap').scrollLeft = (document.getElementById('mapWrap').scrollWidth - document.getElementById('mapWrap').clientWidth) / 2;
+  if (window.innerWidth < 611) els.mapWrap.scrollLeft = (els.mapWrap.scrollWidth - els.mapWrap.clientWidth) / 2;
 })();

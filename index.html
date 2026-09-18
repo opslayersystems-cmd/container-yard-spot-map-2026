@@ -31,7 +31,7 @@
         </section>
 
         <section class="summary" aria-label="იარდის სტატისტიკა">
-          <div class="summary-card"><span class="summary-icon all-icon" aria-hidden="true">▦</span><div><span>სულ სპოტი</span><strong id="totalCount">24</strong></div></div>
+          <div class="summary-card"><span class="summary-icon all-icon" aria-hidden="true">▦</span><div><span>სულ სპოტი</span><strong id="totalCount">58</strong></div></div>
           <div class="summary-card"><span class="summary-icon occupied-icon" aria-hidden="true">▣</span><div><span>დაკავებული</span><strong id="occupiedCount">—</strong></div></div>
           <div class="summary-card"><span class="summary-icon free-icon" aria-hidden="true">◇</span><div><span>თავისუფალი</span><strong id="freeCount">—</strong></div></div>
           <div class="summary-card example-card"><span>სატესტო ძებნა</span><button type="button" id="exampleSearch" class="example-button">MSMU 770952-4 <span aria-hidden="true">↗</span></button></div>
@@ -43,9 +43,12 @@
               <div><p class="section-kicker">ტერიტორიის სქემა</p><h2 id="map-title">სპოტების რუკა</h2></div>
               <div class="legend" aria-label="რუკის აღნიშვნები"><span><i class="legend-free"></i>თავისუფალი</span><span><i class="legend-occupied"></i>დაკავებული</span><span><i class="legend-found"></i>ნაპოვნი</span></div>
             </div>
-            <div class="zone-nav" aria-label="რუკის ზონები"><button type="button" data-zone="A">A · ზედა მარცხენა</button><button type="button" data-zone="B">B · ზედა მარჯვენა</button><button type="button" data-zone="C">C · მარცხენა ზედა</button><button type="button" data-zone="D">D · მარჯვენა ზედა</button><button type="button" data-zone="E">E · მარცხენა ქვედა</button><button type="button" data-zone="F">F · მარჯვენა ქვედა</button></div>
-            <div class="map-wrap" id="mapWrap">
-              <svg id="yardMap" viewBox="100 0 830 1526" role="img" aria-label="წითლად შემოხაზულ რეალურ იარდზე დატანილი 24 სავარაუდო კონტეინერის სპოტი" xmlns="http://www.w3.org/2000/svg">
+            <div class="map-navigation">
+              <div class="zone-nav" aria-label="რუკის ზონები"><button type="button" data-zone="A">A · ზედა მარცხენა</button><button type="button" data-zone="B">B · ზედა მარჯვენა</button><button type="button" data-zone="C">C · მარცხენა ზედა</button><button type="button" data-zone="D">D · მარჯვენა ზედა</button><button type="button" data-zone="E">E · მარცხენა ქვედა</button><button type="button" data-zone="F">F · მარჯვენა ქვედა</button></div>
+              <div class="zoom-actions" role="group" aria-label="რუკის მასშტაბი"><button type="button" id="zoomOut" aria-label="რუკის დაპატარავება" title="რუკის დაპატარავება" disabled>−</button><button type="button" id="zoomIn" aria-label="რუკის გადიდება" title="რუკის გადიდება">+</button></div>
+            </div>
+            <div class="map-wrap" id="mapWrap" data-zoom="0">
+              <svg id="yardMap" viewBox="100 0 830 1526" role="img" aria-label="წითლად შემოხაზულ რეალურ იარდზე დატანილი 58 სავარაუდო კონტეინერის სპოტი" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                   <path id="yardShape" d="M368 27 L390 27 L600 95 L760 125 L895 171 L854 390 L806 540 L681 764 L681 846 L808 891 L725 1115 L652 1364 L609 1471 L604 1498 L352 1438 L160 1380 L198 1219 L270 1008 L381 691 L141 558 L165 497 L225 407 L285 278 Z" />
                   <mask id="outsideYard" maskUnits="userSpaceOnUse" x="100" y="0" width="830" height="1526"><rect x="100" y="0" width="830" height="1526" fill="white" /><use href="#yardShape" fill="black" /></mask>
@@ -62,7 +65,7 @@
                 <g class="north-indicator" transform="translate(902 24)"><path d="M0 20 L8 0 L16 20 L8 16 Z" /><text x="8" y="33" text-anchor="middle">N</text></g>
               </svg>
             </div>
-            <div class="map-footer"><span>წითელი საზღვარი გასწორებულია; სპოტების მოკლე გვერდი კიდის პარალელურია და შუაში გასასვლელი რჩება. ზომები ადგილზე დასადასტურებელია.</span><span class="map-foot-hint">რუკა გადაადგილდება თითით</span></div>
+            <div class="map-footer"><span>58 სპოტი: სიგანე ×1.2, სიგრძე ×1.1; მეზობელ სპოტებს შორის დაშორება სიგანის 20%-ია. ზომები ადგილზე დასადასტურებელია.</span><span class="map-foot-hint">რუკა გადაადგილდება თითით • მასშტაბი +/−</span></div>
           </section>
 
           <aside class="control-card" aria-label="ძებნა და სპოტის მართვა">
