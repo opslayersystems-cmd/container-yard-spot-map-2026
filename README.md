@@ -11,6 +11,8 @@ An interactive Georgian-language demo for assigning containers to numbered yard 
 - The map is shown slightly zoomed out on desktop and phone so more of the yard is visible at once.
 - Zoom buttons let phone users enlarge the spots for easier selection while keeping the wider overview as the default.
 - The 52 user-provided container numbers are available as input suggestions. Their demo spot assignments are illustrative, not actual location claims.
+- The default demo has 30 occupied spots and 28 free spots: the original 10 placements plus 20 additional containers spread across B–F. Existing saved placements are preserved; the extra containers are added to vacancies once, without duplicating numbers. Reset restores all 30 samples.
+- Open **კონტეინერების მიმოსვლა** for the standalone Archify workflow: a Spotter Truck brings in a loaded container, parks it on a free spot, the employee records its location, then a truck collects it and leaves through exit 4. The employee marks departure to release the spot. The diagram text is Georgian; the viewer controls are English.
 - Sample container: `MSMU7709524` in spot `A07` in the demo only.
 - Search highlights a matching spot in green.
 - Select a free spot to assign a container. A duplicate container or occupied spot is rejected.

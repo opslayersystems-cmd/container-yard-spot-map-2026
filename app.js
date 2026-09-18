@@ -1,5 +1,6 @@
 (() => {
   const STORAGE_KEY = 'yard-spots-demo-v5';
+  const DEMO_EXPANSION_KEY = `${STORAGE_KEY}-extra-20`;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const inventory = `
 MSMU7709524 MSMU6398201 TCNU3278686 CAIU9867123 CAIU7758890 MSCU5416358
@@ -12,13 +13,19 @@ CAIU7172390 HAMU3527010 FFAU2345637 MRKU6442868 MSKU1829199 FANU3482520
 SEGU5617083 MSNU5302889 MRSU8928738 MSBU5068407 HAMU3773740 HAMU4124196
 MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
   `.trim().split(/\s+/);
-  const seed = {
+  const originalSeed = {
     A07: 'MSMU 770952-4', A08: 'MSMU 639820-1',
     B01: 'TCNU 327868-6', B03: 'CAIU 986712-3',
     C02: 'CAIU 775889-0', D03: 'MSCU 541635-8',
     E01: 'TGBU 556852-9', E03: 'CAIU 776315-6',
     F04: 'MSNU 507881-9', F06: 'MSNU 930215-1'
   };
+  const additionalSpots = [
+    'B02', 'B05', 'C01', 'C04', 'C07', 'C09',
+    'D01', 'D05', 'D08', 'D11', 'D14', 'D16',
+    'E02', 'E05', 'E07', 'E10', 'F02', 'F08', 'F11', 'F14'
+  ];
+  const seed = { ...originalSeed, ...Object.fromEntries(additionalSpots.map((code, index) => [code, format(inventory[index + 10])])) };
 
   // Every door edge follows its nearby straight yard edge. The long axis is its
   // inward normal, so containers in one row stay parallel and leave the aisle open.
@@ -68,17 +75,34 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
   function normalize(number) { return String(number || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
   function format(number) { const clean = normalize(number); return clean.length === 11 ? `${clean.slice(0,4)} ${clean.slice(4,10)}-${clean.slice(10)}` : clean; }
   function loadAssignments() {
+    let clean = null;
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
-        const clean = {};
+        clean = {};
         for (const [spot, number] of Object.entries(saved)) if (byCode.has(spot) && /^[A-Z]{4}[0-9]{7}$/.test(normalize(number))) clean[spot] = format(number);
-        return clean;
       }
     } catch (_) { /* Private browsing can disable storage; the demo stays usable. */ }
-    return { ...seed };
+    if (!clean) clean = { ...seed };
+    else {
+      try { if (localStorage.getItem(DEMO_EXPANSION_KEY)) return clean; } catch (_) { return clean; }
+      // Expand an existing demo once, preserving every saved placement. If a
+      // preferred spot/number is taken, use another empty spot/unused number.
+      const used = new Set(Object.values(clean).map(normalize));
+      const numbers = [...inventory.slice(10), ...inventory.slice(0, 10)].filter(number => !used.has(number));
+      const vacancies = [...new Set([...additionalSpots, ...byCode.keys()])].filter(code => !clean[code]);
+      vacancies.slice(0, 20).forEach((code, index) => { if (numbers[index]) clean[code] = format(numbers[index]); });
+    }
+    saveAssignments(clean);
+    return clean;
   }
-  function persist() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(assignments)); } catch (_) { /* The in-memory demo still works. */ } }
+  function saveAssignments(value) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(value));
+      localStorage.setItem(DEMO_EXPANSION_KEY, '1');
+    } catch (_) { /* The in-memory demo still works. */ }
+  }
+  function persist() { saveAssignments(assignments); }
   function svg(name, attrs = {}) { const node = document.createElementNS(SVG_NS, name); for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, String(value)); return node; }
   function safe(text) { return String(text).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]); }
   function setFeedback(element, text, kind = '') { element.textContent = text; element.className = `feedback${kind ? ` ${kind}` : ''}`; }

@@ -7,8 +7,8 @@
     <meta name="description" content="კონტეინერების იარდის ინტერაქტიული რუკა — სპოტზე განთავსება და ნომრით მოძებნა." />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310251f'/%3E%3Cpath d='M12 18h40v28H12zM22 18v28M42 18v28' fill='none' stroke='%239be6bd' stroke-width='4'/%3E%3C/svg%3E" />
     <title>კონტეინერების იარდი · სპოტების რუკა</title>
-    <link rel="stylesheet" href="styles.css?v=6" />
-    <script src="app.js?v=6" defer></script>
+    <link rel="stylesheet" href="styles.css?v=7" />
+    <script src="app.js?v=7" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -36,6 +36,27 @@
           <div class="summary-card"><span class="summary-icon free-icon" aria-hidden="true">◇</span><div><span>თავისუფალი</span><strong id="freeCount">—</strong></div></div>
           <div class="summary-card example-card"><span>სატესტო ძებნა</span><button type="button" id="exampleSearch" class="example-button">MSMU 770952-4 <span aria-hidden="true">↗</span></button></div>
         </section>
+
+        <details class="movement-flow">
+          <summary class="flow-link">
+            <span class="flow-link-icon" aria-hidden="true">↳</span>
+            <span><strong>კონტეინერების მიმოსვლა</strong><small>Spotter Truck → სპოტი → სატვირთო → №4</small></span>
+            <span class="flow-link-arrow" aria-hidden="true">⌄</span>
+          </summary>
+          <div class="flow-content">
+            <ol class="flow-steps">
+              <li><span>01</span><div><strong>Spotter Truck შემოდის</strong><p>იარდში შემოაქვს ჩატვირთული კონტეინერი.</p></div></li>
+              <li><span>02</span><div><strong>თავისუფალი სპოტის არჩევა</strong><p>თანამშრომელი რუკაზე ირჩევს თავისუფალ ადგილს.</p></div></li>
+              <li><span>03</span><div><strong>სპოტზე გაჩერება</strong><p>Spotter Truck კონტეინერს არჩეულ სპოტზე აყენებს.</p></div></li>
+              <li><span>04</span><div><strong>მდებარეობის დაფიქსირება</strong><p>კონტეინერის ნომერი უკავშირდება სპოტის კოდს.</p></div></li>
+              <li><span>05</span><div><strong>ნომრით მოძებნა</strong><p>გატანისას რუკა შესაბამის სპოტს მწვანედ აჩვენებს.</p></div></li>
+              <li><span>06</span><div><strong>სატვირთო იღებს კონტეინერს</strong><p>ჩატვირთულ კონტეინერს სატვირთო იღებს სპოტიდან.</p></div></li>
+              <li class="flow-exit"><span>07</span><div><strong>გასვლა №4-ით</strong><p>სატვირთო კონტეინერით ტოვებს იარდს.</p></div></li>
+              <li><span>08</span><div><strong>სპოტი კვლავ თავისუფალია</strong><p>თანამშრომელი აპში აფიქსირებს გატანას.</p></div></li>
+            </ol>
+            <a class="flow-full" href="movement-flow.html" target="_blank" rel="noopener">ინტერაქტიული სქემის გახსნა <span aria-hidden="true">↗</span></a>
+          </div>
+        </details>
 
         <div class="content-grid">
           <section class="map-card" aria-labelledby="map-title">

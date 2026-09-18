@@ -1,0 +1,185 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "კონტეინერის გზა იარდში",
+    "quality_profile": "showcase",
+    "animation": "none",
+    "legend": {
+      "mode": "hidden"
+    }
+  },
+  "lanes": [
+    {
+      "id": "arrival",
+      "label": "შემოსვლა"
+    },
+    {
+      "id": "yard",
+      "label": "იარდში განთავსება"
+    },
+    {
+      "id": "departure",
+      "label": "გატანა"
+    }
+  ],
+  "mainPath": [
+    "loaded-arrival",
+    "choose-vacancy",
+    "park-container",
+    "record-location",
+    "find-container",
+    "truck-pickup",
+    "gate-four",
+    "release-spot"
+  ],
+  "nodes": [
+    {
+      "id": "loaded-arrival",
+      "lane": "arrival",
+      "col": 0,
+      "type": "external",
+      "label": "Spotter Truck",
+      "sublabel": "ჩატვირთული კონტეინერი შემოდის",
+      "tag": "1",
+      "width": 160
+    },
+    {
+      "id": "choose-vacancy",
+      "lane": "arrival",
+      "col": 1,
+      "type": "frontend",
+      "label": "თავისუფალი სპოტი",
+      "sublabel": "თანამშრომელი ირჩევს რუკაზე",
+      "tag": "2",
+      "width": 160
+    },
+    {
+      "id": "park-container",
+      "lane": "yard",
+      "col": 1,
+      "type": "backend",
+      "label": "სპოტზე გაჩერება",
+      "sublabel": "Spotter Truck აყენებს კონტეინერს",
+      "tag": "3",
+      "width": 160
+    },
+    {
+      "id": "record-location",
+      "lane": "yard",
+      "col": 2,
+      "type": "database",
+      "label": "ნომრის მინიჭება",
+      "sublabel": "კონტეინერის ნომერი ↔ სპოტის კოდი",
+      "tag": "4",
+      "width": 160
+    },
+    {
+      "id": "find-container",
+      "lane": "yard",
+      "col": 3,
+      "type": "frontend",
+      "label": "ნომრით მოძებნა",
+      "sublabel": "რუკა სპოტს მწვანედ აჩვენებს",
+      "tag": "5",
+      "width": 160
+    },
+    {
+      "id": "truck-pickup",
+      "lane": "departure",
+      "col": 3,
+      "type": "external",
+      "label": "სატვირთო იღებს",
+      "sublabel": "ჩატვირთულ კონტეინერს სპოტიდან",
+      "tag": "6",
+      "width": 160
+    },
+    {
+      "id": "gate-four",
+      "lane": "departure",
+      "col": 4,
+      "type": "security",
+      "label": "გასასვლელი №4",
+      "sublabel": "სატვირთო ტოვებს იარდს",
+      "tag": "7",
+      "width": 160
+    },
+    {
+      "id": "release-spot",
+      "lane": "departure",
+      "col": 5,
+      "type": "frontend",
+      "label": "სპოტი თავისუფალია",
+      "sublabel": "თანამშრომელი აფიქსირებს გატანას",
+      "tag": "8",
+      "width": 160
+    }
+  ],
+  "edges": [
+    {
+      "id": "arrival-choice",
+      "from": "loaded-arrival",
+      "to": "choose-vacancy",
+      "role": "main"
+    },
+    {
+      "id": "choice-parking",
+      "from": "choose-vacancy",
+      "to": "park-container",
+      "role": "main"
+    },
+    {
+      "id": "parking-record",
+      "from": "park-container",
+      "to": "record-location",
+      "role": "main"
+    },
+    {
+      "id": "record-search",
+      "from": "record-location",
+      "to": "find-container",
+      "label": "გატანის დრო",
+      "role": "main"
+    },
+    {
+      "id": "search-pickup",
+      "from": "find-container",
+      "to": "truck-pickup",
+      "role": "main"
+    },
+    {
+      "id": "pickup-exit",
+      "from": "truck-pickup",
+      "to": "gate-four",
+      "role": "main"
+    },
+    {
+      "id": "exit-release",
+      "from": "gate-four",
+      "to": "release-spot",
+      "role": "main"
+    }
+  ],
+  "semanticChecks": {
+    "allowedRoots": [
+      "loaded-arrival"
+    ],
+    "allowedTerminals": [
+      "release-spot"
+    ],
+    "requiredPaths": [
+      {
+        "from": "loaded-arrival",
+        "to": "park-container"
+      },
+      {
+        "from": "truck-pickup",
+        "to": "gate-four"
+      },
+      {
+        "from": "gate-four",
+        "to": "release-spot"
+      }
+    ]
+  }
+}
