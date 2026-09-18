@@ -1,5 +1,5 @@
 (() => {
-  const STORAGE_KEY = 'yard-spots-demo-v4';
+  const STORAGE_KEY = 'yard-spots-demo-v5';
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const inventory = `
 MSMU7709524 MSMU6398201 TCNU3278686 CAIU9867123 CAIU7758890 MSCU5416358
@@ -13,11 +13,11 @@ SEGU5617083 MSNU5302889 MRSU8928738 MSBU5068407 HAMU3773740 HAMU4124196
 MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
   `.trim().split(/\s+/);
   const seed = {
-    A02: 'MSMU 770952-4', A04: 'MSMU 639820-1',
+    A07: 'MSMU 770952-4', A08: 'MSMU 639820-1',
     B01: 'TCNU 327868-6', B03: 'CAIU 986712-3',
-    C02: 'CAIU 775889-0', D02: 'MSCU 541635-8',
+    C02: 'CAIU 775889-0', D03: 'MSCU 541635-8',
     E01: 'TGBU 556852-9', E03: 'CAIU 776315-6',
-    F02: 'MSNU 507881-9', F04: 'MSNU 930215-1'
+    F04: 'MSNU 507881-9', F06: 'MSNU 930215-1'
   };
 
   // Every door edge follows its nearby straight yard edge. The long axis is its
@@ -41,13 +41,22 @@ MRSU2823684 HAMU4881414 MEDU7211081 FFAU8347832
       return { code: `${prefix}${String(index + 1).padStart(2, '0')}`, corners, center: [door[0] + normal[0] * length / 2, door[1] + normal[1] * length / 2], tangent, normal, width, length };
     });
   }
+  function extendedRow(prefix, start, end, oldCount, oldCenter, addedAbove, addedBelow, length, width, setback, side) {
+    const edgeLength = Math.hypot(end[0] - start[0], end[1] - start[1]);
+    const center = oldCenter + (addedBelow - addedAbove) * width * 1.2 / (2 * edgeLength);
+    return edgeRow(prefix, start, end, oldCount + addedAbove + addedBelow, center, length, width, setback, side);
+  }
+  // The top boundary is one straight edge. Preserve A/B numbering while keeping
+  // the first six A and final five B footprints clear of the two access points.
+  const topSpots = edgeRow('T', [368, 27], [895, 171], 18, .5, 137.5, 23.4, 28, 1)
+    .map((spot, index) => ({ ...spot, code: index < 8 ? `A${String(index + 1).padStart(2, '0')}` : `B${String(index - 7).padStart(2, '0')}` }))
+    .filter(spot => (spot.code.startsWith('A') && Number(spot.code.slice(1)) >= 7) || (spot.code.startsWith('B') && Number(spot.code.slice(1)) <= 5));
   const spots = [
-    ...edgeRow('A', [390, 27], [600, 95], 8, .5, 137.5, 23.4, 28, 1),
-    ...edgeRow('B', [600, 95], [895, 171], 10, .48, 137.5, 23.4, 28, 1),
+    ...topSpots,
     ...edgeRow('C', [285, 278], [141, 558], 10, .455, 123.2, 23.4, 17, -1),
-    ...edgeRow('D', [895, 171], [681, 764], 10, .6, 126.5, 23.4, 20, 1),
+    ...extendedRow('D', [895, 171], [681, 764], 10, .6, 1, 5, 126.5, 23.4, 20, 1),
     ...edgeRow('E', [381, 691], [160, 1380], 10, .43, 123.2, 24.6, 18, -1),
-    ...edgeRow('F', [808, 891], [652, 1364], 10, .425, 123.2, 24.6, 18, 1)
+    ...extendedRow('F', [808, 891], [604, 1498], 10, .331, 2, 3, 123.2, 24.6, 18, 1)
   ];
   const byCode = new Map(spots.map(spot => [spot.code, spot]));
   const els = Object.fromEntries(['spotLayer','totalCount','occupiedCount','freeCount','searchTab','assignTab','searchPane','assignPane','searchForm','searchInput','searchFeedback','assignForm','spotCode','containerInput','assignFeedback','detailPanel','resetButton','exampleSearch','sampleNumber','mapWrap','zoomOut','zoomIn'].map(id => [id, document.getElementById(id)]));

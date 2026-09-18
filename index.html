@@ -7,8 +7,8 @@
     <meta name="description" content="კონტეინერების იარდის ინტერაქტიული რუკა — სპოტზე განთავსება და ნომრით მოძებნა." />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310251f'/%3E%3Cpath d='M12 18h40v28H12zM22 18v28M42 18v28' fill='none' stroke='%239be6bd' stroke-width='4'/%3E%3C/svg%3E" />
     <title>კონტეინერების იარდი · სპოტების რუკა</title>
-    <link rel="stylesheet" href="styles.css?v=4" />
-    <script src="app.js?v=4" defer></script>
+    <link rel="stylesheet" href="styles.css?v=5" />
+    <script src="app.js?v=5" defer></script>
   </head>
   <body>
     <div class="app-shell">
@@ -50,13 +50,21 @@
             <div class="map-wrap" id="mapWrap" data-zoom="0">
               <svg id="yardMap" viewBox="100 0 830 1526" role="img" aria-label="წითლად შემოხაზულ რეალურ იარდზე დატანილი 58 სავარაუდო კონტეინერის სპოტი" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                  <path id="yardShape" d="M368 27 L390 27 L600 95 L760 125 L895 171 L854 390 L806 540 L681 764 L681 846 L808 891 L725 1115 L652 1364 L609 1471 L604 1498 L352 1438 L160 1380 L198 1219 L270 1008 L381 691 L141 558 L165 497 L225 407 L285 278 Z" />
+                  <path id="yardShape" d="M368 27 L895 171 L681 764 L681 846 L808 891 L604 1498 L160 1380 L381 691 L141 558 L285 278 Z" />
                   <mask id="outsideYard" maskUnits="userSpaceOnUse" x="100" y="0" width="830" height="1526"><rect x="100" y="0" width="830" height="1526" fill="white" /><use href="#yardShape" fill="black" /></mask>
                 </defs>
                 <image href="yard-clean-reference.png" x="5.77" y="-159.62" width="1038.46" height="1774.36" preserveAspectRatio="none" />
                 <rect class="outside-mask" x="100" y="0" width="830" height="1526" mask="url(#outsideYard)" />
                 <use class="site-overlay" href="#yardShape" />
                 <use class="site-boundary" href="#yardShape" />
+                <g class="gate-access" aria-label="ორი შესასვლელი და გასასვლელი A ზონაში">
+                  <polygon class="gate-lane" points="397,35 460,52 429,168 366,151" />
+                  <polygon class="gate-lane" points="478,57 541,74 510,190 447,173" />
+                  <path class="gate-opening" d="M397 35 L460 52 M478 57 L541 74" />
+                  <path class="gate-arrow" d="M428 61 L405 132 M405 132 L399 117 M405 132 L416 121 M509 83 L486 154 M486 154 L480 139 M486 154 L497 143" />
+                  <circle class="gate-badge" cx="392" cy="142" r="13" /><text class="gate-number" x="392" y="142">1</text>
+                  <circle class="gate-badge" cx="473" cy="164" r="13" /><text class="gate-number" x="473" y="164">2</text>
+                </g>
                 <path class="aisle-center" d="M505 300 L525 470 L505 640 M530 815 L513 1080 L467 1270" />
                 <path class="entry-arrow" d="M602 1490 L568 1420 M559 1437 L568 1420 L584 1428" />
                 <text class="map-direction" x="380" y="1475">შესასვლელი</text>
@@ -65,7 +73,7 @@
                 <g class="north-indicator" transform="translate(902 24)"><path d="M0 20 L8 0 L16 20 L8 16 Z" /><text x="8" y="33" text-anchor="middle">N</text></g>
               </svg>
             </div>
-            <div class="map-footer"><span>58 სპოტი: სიგანე ×1.2, სიგრძე ×1.1; მეზობელ სპოტებს შორის დაშორება სიგანის 20%-ია. ზომები ადგილზე დასადასტურებელია.</span><span class="map-foot-hint">რუკა გადაადგილდება თითით • მასშტაბი +/−</span></div>
+            <div class="map-footer"><span>58 სპოტი • A01–A06 და B06–B10 გაუქმებულია • A ზონაში ორი შესასვლელი/გასასვლელია. ზომები ადგილზე დასადასტურებელია.</span><span class="map-foot-hint">რუკა გადაადგილდება თითით • მასშტაბი +/−</span></div>
           </section>
 
           <aside class="control-card" aria-label="ძებნა და სპოტის მართვა">

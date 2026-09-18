@@ -76,6 +76,13 @@
 .spot .door-edge{stroke-width:2.5}
 .spot .spot-code{font-size:12px;letter-spacing:-.025em}
 
+.gate-access{pointer-events:none}
+.gate-lane{fill:#9de7bc;fill-opacity:.24;stroke:#e7ffdc;stroke-width:2;stroke-dasharray:7 6}
+.gate-opening{fill:none;stroke:#d8f1d9;stroke-width:8}
+.gate-arrow{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px #17452e)}
+.gate-badge{fill:#0d6745;stroke:#e9ffec;stroke-width:2}
+.gate-number{fill:#fff;font-size:14px;font-weight:800;text-anchor:middle;dominant-baseline:central}
+
 .map-navigation{display:flex;align-items:center;border-top:1px solid var(--line)}
 .map-navigation .zone-nav{flex:1;min-width:0;border-top:0}
 .zoom-actions{display:flex;flex:none;gap:4px;padding:4px 7px;border-left:1px solid var(--line)}
